@@ -6,223 +6,385 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Phone, MapPin, Calendar, Save, Loader as Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  UserCircleIcon,
+  CameraIcon,
+  CheckCircleIcon,
+  PencilIcon
+} from '@heroicons/react/24/outline';
+import UserLayout from '@/components/user/UserLayout';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function UserProfile() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: 'Ahmad Hidayat',
-    email: 'ahmad.hidayat@email.com',
-    phone: '+62 812 3456 7890',
-    address: 'Jakarta, Indonesia',
-    dateOfBirth: '1995-05-15',
-    disabilityType: 'fisik',
-    bio: 'Saya adalah seorang pelajar yang antusias dalam bidang teknologi dan desain.',
+    fullName: 'Ahmad Fauzi Rahman',
+    email: 'ahmad.fauzi@email.com',
+    phone: '081234567890',
+    birthDate: '1995-05-15',
+    gender: 'male',
+    address: 'Jl. Merdeka No. 123, Jakarta Pusat',
+    bio: 'Seorang pembelajar yang antusias dalam bidang teknologi dan pengembangan web. Saya percaya bahwa pendidikan adalah kunci untuk membuka peluang baru dalam hidup.',
+    disabilityType: 'none',
+    accessibilityPreferences: {
+      screenReader: false,
+      subtitle: true,
+      signLanguage: false,
+      highContrast: false,
+      textSize: 'medium',
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleAccessibilityChange = (field: string, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      accessibilityPreferences: {
+        ...prev.accessibilityPreferences,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSave = () => {
+    console.log('Saving profile data:', formData);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
+  const handleAvatarUpload = () => {
+    console.log('Upload avatar');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 animate-fadeIn">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Profil Saya
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Kelola informasi pribadi dan preferensi akun Anda
-          </p>
+    <UserLayout>
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fadeIn">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Profile Saya
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Kelola informasi pribadi dan preferensi aksesibilitas Anda
+            </p>
+          </div>
+          <div>
+            {!isEditing ? (
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="bg-[#005EB8] hover:bg-[#004A93]"
+              >
+                <PencilIcon className="h-4 w-4 mr-2" />
+                Edit Profile
+              </Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                >
+                  Batal
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  className="bg-[#008A00] hover:bg-[#006600]"
+                >
+                  <CheckCircleIcon className="h-4 w-4 mr-2" />
+                  Simpan
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="space-y-6">
-            <Card className="main-card animate-scaleIn">
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="animate-scaleIn">
               <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <Avatar className="h-32 w-32 mx-auto">
-                    <AvatarImage src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400" />
-                    <AvatarFallback>AH</AvatarFallback>
-                  </Avatar>
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="relative">
+                    <div className="h-32 w-32 rounded-full bg-gradient-to-br from-[#005EB8] to-[#008A00] flex items-center justify-center text-white text-4xl font-bold">
+                      AF
+                    </div>
+                    {isEditing && (
+                      <button
+                        onClick={handleAvatarUpload}
+                        className="absolute bottom-0 right-0 h-10 w-10 rounded-full bg-[#005EB8] hover:bg-[#004A93] flex items-center justify-center text-white transition-colors"
+                      >
+                        <CameraIcon className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                       {formData.fullName}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Pelajar Aktif
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {formData.email}
                     </p>
                   </div>
-                  <Button variant="outline" className="w-full">
-                    Ubah Foto Profil
-                  </Button>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    <Badge className="bg-[#005EB8]">Student</Badge>
+                    <Badge className="bg-[#008A00]">Active</Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="main-card animate-scaleIn delay-100">
+            <Card className="animate-scaleIn delay-100">
               <CardHeader>
                 <CardTitle className="text-lg">Statistik</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Kursus Selesai</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">5</span>
+                <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400">Kursus Aktif</span>
+                  <span className="font-bold text-[#005EB8]">6</span>
+                </div>
+                <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400">Kursus Selesai</span>
+                  <span className="font-bold text-[#008A00]">3</span>
+                </div>
+                <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400">Sertifikat</span>
+                  <span className="font-bold text-[#F4B400]">3</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Sertifikat</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">3</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Jam Belajar</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">48</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Bergabung</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">Jan 2024</span>
+                  <span className="text-gray-600 dark:text-gray-400">Jam Belajar</span>
+                  <span className="font-bold text-gray-900 dark:text-white">24</span>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="lg:col-span-2">
-            <Card className="main-card animate-fadeSlide">
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="animate-fadeSlide">
               <CardHeader>
                 <CardTitle>Informasi Pribadi</CardTitle>
                 <CardDescription>
-                  Update informasi profil Anda di sini
+                  Data pribadi Anda akan dijaga kerahasiaannya
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="fullName">Nama Lengkap</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="fullName"
-                          value={formData.fullName}
-                          onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Nomor Telepon</Label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="phone"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="dateOfBirth">Tanggal Lahir</Label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="dateOfBirth"
-                          type="date"
-                          value={formData.dateOfBirth}
-                          onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="disabilityType">Jenis Disabilitas</Label>
-                      <Select
-                        value={formData.disabilityType}
-                        onValueChange={(value) => setFormData({ ...formData, disabilityType: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">Tidak Ada</SelectItem>
-                          <SelectItem value="fisik">Fisik</SelectItem>
-                          <SelectItem value="sensorik">Sensorik</SelectItem>
-                          <SelectItem value="mental">Mental</SelectItem>
-                          <SelectItem value="intelektual">Intelektual</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="address">Alamat</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="address"
-                          value={formData.address}
-                          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
+              <CardContent className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="bio">Tentang Saya</Label>
-                    <Textarea
-                      id="bio"
-                      value={formData.bio}
-                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                      rows={4}
-                      placeholder="Ceritakan tentang diri Anda..."
+                    <Label htmlFor="fullName">Nama Lengkap</Label>
+                    <Input
+                      id="fullName"
+                      value={formData.fullName}
+                      onChange={(e) => handleInputChange('fullName', e.target.value)}
+                      disabled={!isEditing}
                     />
                   </div>
 
-                  <div className="flex gap-4">
-                    <Button type="submit" disabled={isLoading}>
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Menyimpan...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="mr-2 h-4 w-4" />
-                          Simpan Perubahan
-                        </>
-                      )}
-                    </Button>
-                    <Button type="button" variant="outline">
-                      Batal
-                    </Button>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      disabled
+                      className="bg-gray-50 dark:bg-gray-800"
+                    />
                   </div>
-                </form>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">No. Telepon</Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      disabled={!isEditing}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="birthDate">Tanggal Lahir</Label>
+                    <Input
+                      id="birthDate"
+                      type="date"
+                      value={formData.birthDate}
+                      onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                      disabled={!isEditing}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Jenis Kelamin</Label>
+                    <Select
+                      value={formData.gender}
+                      onValueChange={(value) => handleInputChange('gender', value)}
+                      disabled={!isEditing}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Laki-laki</SelectItem>
+                        <SelectItem value="female">Perempuan</SelectItem>
+                        <SelectItem value="other">Lainnya</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="disabilityType">Jenis Disabilitas (Opsional)</Label>
+                    <Select
+                      value={formData.disabilityType}
+                      onValueChange={(value) => handleInputChange('disabilityType', value)}
+                      disabled={!isEditing}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Tidak Ada</SelectItem>
+                        <SelectItem value="visual">Tunanetra</SelectItem>
+                        <SelectItem value="hearing">Tunarungu</SelectItem>
+                        <SelectItem value="physical">Tunadaksa</SelectItem>
+                        <SelectItem value="cognitive">Kognitif</SelectItem>
+                        <SelectItem value="other">Lainnya</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address">Alamat</Label>
+                  <Textarea
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    disabled={!isEditing}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bio</Label>
+                  <Textarea
+                    id="bio"
+                    value={formData.bio}
+                    onChange={(e) => handleInputChange('bio', e.target.value)}
+                    disabled={!isEditing}
+                    rows={4}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="animate-fadeSlide delay-100">
+              <CardHeader>
+                <CardTitle>Preferensi Aksesibilitas</CardTitle>
+                <CardDescription>
+                  Sesuaikan pengalaman belajar dengan kebutuhan Anda
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div>
+                      <Label className="font-medium">Screen Reader</Label>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Dukungan pembaca layar
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formData.accessibilityPreferences.screenReader}
+                      onChange={(e) => handleAccessibilityChange('screenReader', e.target.checked)}
+                      disabled={!isEditing}
+                      className="h-5 w-5 rounded border-gray-300 text-[#005EB8] focus:ring-[#005EB8]"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div>
+                      <Label className="font-medium">Subtitle</Label>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Tampilkan subtitle video
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formData.accessibilityPreferences.subtitle}
+                      onChange={(e) => handleAccessibilityChange('subtitle', e.target.checked)}
+                      disabled={!isEditing}
+                      className="h-5 w-5 rounded border-gray-300 text-[#005EB8] focus:ring-[#005EB8]"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div>
+                      <Label className="font-medium">Bahasa Isyarat</Label>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Video bahasa isyarat
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formData.accessibilityPreferences.signLanguage}
+                      onChange={(e) => handleAccessibilityChange('signLanguage', e.target.checked)}
+                      disabled={!isEditing}
+                      className="h-5 w-5 rounded border-gray-300 text-[#005EB8] focus:ring-[#005EB8]"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div>
+                      <Label className="font-medium">Kontras Tinggi</Label>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Mode kontras tinggi
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formData.accessibilityPreferences.highContrast}
+                      onChange={(e) => handleAccessibilityChange('highContrast', e.target.checked)}
+                      disabled={!isEditing}
+                      className="h-5 w-5 rounded border-gray-300 text-[#005EB8] focus:ring-[#005EB8]"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="textSize">Ukuran Teks</Label>
+                  <Select
+                    value={formData.accessibilityPreferences.textSize}
+                    onValueChange={(value) => handleAccessibilityChange('textSize', value)}
+                    disabled={!isEditing}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Kecil</SelectItem>
+                      <SelectItem value="medium">Sedang</SelectItem>
+                      <SelectItem value="large">Besar</SelectItem>
+                      <SelectItem value="extra-large">Sangat Besar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
-    </div>
+    </UserLayout>
   );
 }
